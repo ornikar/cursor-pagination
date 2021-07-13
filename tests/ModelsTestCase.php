@@ -54,16 +54,16 @@ class ModelsTestCase extends TestCase
     protected function setUpRoutes(Application $app)
     {
         \Route::get('/test/one', function () {
-            return User::cursorPaginate(5)->toJson();
+            return User::legacyCursorPaginate(5)->toJson();
         });
         \Route::get('/test/inverse', function () {
-            return User::orderBy('_id', 'desc')->cursorPaginate()->toJson();
+            return User::orderBy('_id', 'desc')->legacyCursorPaginate()->toJson();
         });
         \Route::get('/test/query_inverse', function () {
-            return User::getQuery()->orderBy('_id', 'desc')->cursorPaginate()->toJson();
+            return User::getQuery()->orderBy('_id', 'desc')->legacyCursorPaginate()->toJson();
         });
         \Route::get('/test/resource', function () {
-            $res = (new \Illuminate\Http\Resources\Json\ResourceCollection(User::cursorPaginate(5)));
+            $res = (new \Illuminate\Http\Resources\Json\ResourceCollection(User::legacyCursorPaginate(5)));
 
             return $res->toResponse(request())->getContent();
         });
