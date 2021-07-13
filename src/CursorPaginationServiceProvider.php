@@ -126,7 +126,7 @@ class CursorPaginationServiceProvider extends ServiceProvider
         };
 
         // Register macros
-        QueryBuilder::macro('cursorPaginate', $macro);
-        EloquentBuilder::macro('cursorPaginate', $macro);
+        QueryBuilder::macro('legacyCursorPaginate', $macro);
+        EloquentBuilder::macro('legacyCursorPaginate', $macro);
     }
 }

@@ -11,7 +11,7 @@ class MacroTest extends ModelsTestCase
 {
     public function test_exist()
     {
-        $macroName = 'cursorPaginate';
+        $macroName = 'legacyCursorPaginate';
         $this->assertTrue(QueryBuilder::hasMacro($macroName));
         // Cannot assert the same on EloquentBuilder cause it does not extend Macroable
         //EloquentBuilder::hasMacro($macroName);
@@ -19,7 +19,7 @@ class MacroTest extends ModelsTestCase
 
     public function test_macro_works()
     {
-        $p = User::cursorPaginate($perPage = 2);
+        $p = User::legacyCursorPaginate($perPage = 2);
 
         $this->assertInstanceOf(CursorPaginator::class, $p);
 
@@ -28,7 +28,7 @@ class MacroTest extends ModelsTestCase
 
     public function test_on_query_builder_without_identifier()
     {
-        $p = \DB::table('users')->cursorPaginate(2);
+        $p = \DB::table('users')->legacyCursorPaginate(2);
         $this->assertInstanceOf(CursorPaginator::class, $p);
 
         $this->expectException(\ErrorException::class);
@@ -39,7 +39,7 @@ class MacroTest extends ModelsTestCase
 
     public function test_on_query_builder_with_identifier()
     {
-        $p = \DB::table('users')->cursorPaginate(2, ['*'], [
+        $p = \DB::table('users')->legacyCursorPaginate(2, ['*'], [
             'identifier' => '_id',
         ]);
         $this->assertInstanceOf(CursorPaginator::class, $p);
@@ -51,7 +51,7 @@ class MacroTest extends ModelsTestCase
     {
         list($prev_name, $next_name) = CursorPaginator::cursorQueryNames();
 
-        $p = User::cursorPaginate([$prev_count = 2, $next_count = 4], ['*'], [
+        $p = User::legacyCursorPaginate([$prev_count = 2, $next_count = 4], ['*'], [
             'request' => $req = new Request([
                 $prev_name => User::orderBy('_id', 'desc')->first()->_id,
             ]),
@@ -66,7 +66,7 @@ class MacroTest extends ModelsTestCase
     {
         list($prev_name, $next_name) = CursorPaginator::cursorQueryNames();
 
-        $p = User::cursorPaginate([$prev_count = 2, $next_count = 4], ['*'], [
+        $p = User::legacyCursorPaginate([$prev_count = 2, $next_count = 4], ['*'], [
             'request' => $req = new Request(),
             'path'    => '/',
         ]);
@@ -79,7 +79,7 @@ class MacroTest extends ModelsTestCase
     {
         list($prev_name, $next_name) = CursorPaginator::cursorQueryNames();
 
-        $p = User::cursorPaginate([$prev_count = 2, $next_count = 4], ['*'], [
+        $p = User::legacyCursorPaginate([$prev_count = 2, $next_count = 4], ['*'], [
             'request' => $req = new Request([
                 $next_name => 1,
             ]),
@@ -94,7 +94,7 @@ class MacroTest extends ModelsTestCase
     {
         list($prev_name, $next_name) = CursorPaginator::cursorQueryNames();
 
-        $p = User::cursorPaginate(10, ['*'], [
+        $p = User::legacyCursorPaginate(10, ['*'], [
             'request' => $req = new Request([
                 $prev_name => $prev_val = 6,
                 $next_name => $next_val = 1,
@@ -107,7 +107,7 @@ class MacroTest extends ModelsTestCase
 
     public function test_sorted_by_date()
     {
-        $p = User::orderBy('datetime', 'asc')->cursorPaginate(10, ['*'], [
+        $p = User::orderBy('datetime', 'asc')->legacyCursorPaginate(10, ['*'], [
             'identifier' => 'datetime',
             'path'       => '/',
         ]);
@@ -122,7 +122,7 @@ class MacroTest extends ModelsTestCase
     {
         $p = \DB::table('users')
             ->orderBy('datetime', 'asc')
-            ->cursorPaginate(10, ['*'], [
+            ->legacyCursorPaginate(10, ['*'], [
                 'identifier'      => 'datetime',
                 'date_identifier' => true,
                 'path'            => '/',
@@ -136,7 +136,7 @@ class MacroTest extends ModelsTestCase
 
     public function test_sorted_by_date_auto_identifier()
     {
-        $p = User::orderBy('datetime', 'asc')->cursorPaginate(10, ['*'], ['path' => '/']);
+        $p = User::orderBy('datetime', 'asc')->legacyCursorPaginate(10, ['*'], ['path' => '/']);
 
         $this->assertGreaterThanOrEqual(strtotime('last month'), $p->prevCursor());
         $this->assertLessThanOrEqual(strtotime('now'), $p->prevCursor());
